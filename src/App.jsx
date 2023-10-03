@@ -1,31 +1,38 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import Header from "./components/Header";
 import TodoComputed from "./components/TodoComputed";
 import TodoCreate from "./components/TodoCreate";
 import TodoFilter from "./components/TodoFilter";
 import TodoList from "./components/TodoList";
 
-const initialStateTodo = [
-  {
-id: 1, title: "complete online javascript bluuweb curse", completed: true
-  },
-  {
-id: 2, title: "go to the gym", completed: false
-  },
-  {
-id: 3, title: "10min meditando", completed: true
-  },
-  {
-id: 4, title: "pick up groseries", completed: false
-  },
-  {
-id: 5, title: "complete todo app on frontend mentor", completed: false
-  },
-];
+//const initialStateTodo = [
+  //{
+//id: 1, title: "complete online javascript bluuweb curse", completed: true
+  //},
+  //{
+//id: 2, title: "go to the gym", completed: false
+  //},
+  //{
+//id: 3, title: "10min meditando", completed: true
+  //},
+  //{
+//id: 4, title: "pick up groseries", completed: false
+  //},
+  //{
+//id: 5, title: "complete todo app on frontend mentor", completed: false
+  //},
+//];
+
+const initialStateTodo = JSON.parse(localStorage.getItem("todos")) || [];
 
 const App = () =>{ 
 
 const [todos, setTodos] = useState(initialStateTodo);
+//nos puede servir para esta pendiente de algun dato (todos, contiene todos nuestros valores)
+//nos genera una llave con un string, todo lo que guardemos es string y nos sirve para mandar los datos en formato json
+useEffect (() => {
+localStorage.setItem("todos", JSON.stringify(todos));
+},[todos]);
 
 const createTodo = (title) => {
   const newTodo = {
@@ -67,9 +74,10 @@ const filteredTodos = ()  => {
 }
 
   return (
-    <div className="dark:bg-gray-900 min-h-screen bg-[url('./assets/images/bg-mobile-light.jpg')] bg-no-repeat bg-contain bg-gray-300 dark:bg-[url('./assets/images/bg-mobile-dark.jpg')] transition-all duration-1000">
+    <div className="dark:bg-gray-900 min-h-screen bg-[url('./assets/images/bg-mobile-light.jpg')] bg-no-repeat bg-contain bg-gray-300 dark:bg-[url('./assets/images/bg-mobile-dark.jpg')] transition-all duration-1000
+    md:bg-[url('./assets/images/bg-desktop-light.jpg')] md:dark:bg-[url('./assets/images/bg-desktop-dark.jpg')] ">
       <Header/>
-    <main className="container mx-auto mt-8 px-4">
+    <main className="container mx-auto mt-8 px-4 md:max-w-xl ">
     {/*todo create todos son componentes*/}
     <TodoCreate createTodo= {createTodo}/>
     {/* todo list(todoitem)  todoupdate y tododelete*/}
