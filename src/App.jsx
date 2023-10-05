@@ -1,9 +1,12 @@
+import { DragDropContext} from "@hello-pangea/dnd";
+
 import { useEffect, useState } from "react";
 import Header from "./components/Header";
 import TodoComputed from "./components/TodoComputed";
 import TodoCreate from "./components/TodoCreate";
 import TodoFilter from "./components/TodoFilter";
 import TodoList from "./components/TodoList";
+//import { Result, list } from "postcss";
 
 //const initialStateTodo = [
   //{
@@ -22,6 +25,13 @@ import TodoList from "./components/TodoList";
 //id: 5, title: "complete todo app on frontend mentor", completed: false
   //},
 //];
+
+const reorder = (list, startIndex, endIndex) => {
+  const result = [...list];
+  const [removed] =result.splice(startIndex, 1);
+  result.splice(endIndex, 0, removed);
+  return result;
+}
 
 const initialStateTodo = JSON.parse(localStorage.getItem("todos")) || [];
 
@@ -73,6 +83,19 @@ const filteredTodos = ()  => {
   }
 }
 
+const handleDragEnd = (result) => {
+const { destination, source} = result;
+if (!destination) return;
+if (
+  source.index === destination.index &&
+  source.DroppableId == destination.DroppableId
+)
+return;
+setTodos((prevTask) => 
+reorder (prevTask, source.index, destination.index)
+);
+};
+
   return (
     <div className="dark:bg-gray-900 min-h-screen bg-[url('./assets/images/bg-mobile-light.jpg')] bg-no-repeat bg-contain bg-gray-300 dark:bg-[url('./assets/images/bg-mobile-dark.jpg')] transition-all duration-1000
     md:bg-[url('./assets/images/bg-desktop-light.jpg')] md:dark:bg-[url('./assets/images/bg-desktop-dark.jpg')] ">
@@ -81,7 +104,11 @@ const filteredTodos = ()  => {
     {/*todo create todos son componentes*/}
     <TodoCreate createTodo= {createTodo}/>
     {/* todo list(todoitem)  todoupdate y tododelete*/}
-    <TodoList todos= {filteredTodos()} removeTodo={removeTodo} updateTodo={updateTodo}/>      
+
+    <DragDropContext onDragEnd={handleDragEnd}>
+    <TodoList todos= {filteredTodos()} removeTodo={removeTodo} updateTodo={updateTodo}/>     
+    </DragDropContext> 
+
     {/*todo computed */}
     <TodoComputed computedItemsLeft={computedItemsLeft} clearCompleted={clearCompleted}/>
     {/*todo filter */}
